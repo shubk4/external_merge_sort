@@ -1,9 +1,14 @@
 #include<bits/stdc++.h>
 
 using namespace std;
-vector<vector<long long int>> runs;
-int seeks = 0;
-int transfer = 0;
+vector<vector<long long int>> runs; // vector to store sorted runs
+int seeks = 0;  // total no of seeks
+int transfer = 0;  // total no of transfer
+int sorted_seeks = 0;  // total no of sorted seeks
+int sorted_transfer = 0;  // total no of sorted transfer 
+vector<int> merge_seeks;  // vector of seeks in different merge pass such that merge_seeks[0] = no of seeksin merge pass 1
+vector<int> merge_transfer;  // same as above except transfer in place of seeks
+
 
 // all the implementation details and executation is done using proper comments
 
@@ -134,11 +139,12 @@ int main(int argc, char* argv[]){
     }
     file.close();
 
-
+    sorted_seeks = seeks;
+    sorted_transfer= transfer;
 
     // merge
 
-
+    int seektemp = seeks, transfertemp = transfer;  // variables to store seeks and tranfer of last merge pass
 
     int cnt=1;
     while (runs.size()>1) 
@@ -167,6 +173,10 @@ int main(int argc, char* argv[]){
             fout<<endl<<endl<<endl;
         }
         cnt++;
+        merge_seeks.push_back(seeks-seektemp);          // to calculate no of seeks in each marge pass
+        merge_transfer.push_back(transfer-transfertemp); // same as above
+        seektemp=seeks;
+        transfertemp=transfer;
     }
     ofstream fout("Sorted.txt");
     for (auto i : runs)
@@ -180,4 +190,12 @@ int main(int argc, char* argv[]){
     cout<<"No of Seeks: "<<seeks<<endl;
     cout<<"No of Transfers: "<<transfer<<endl;
     cout<<"No of Merge Passes: "<<cnt-1<<endl;
+    cout<<"No of sorted Seeks: "<<sorted_seeks<<endl;
+    cout<<"No of sorted Transfers: "<<sorted_transfer<<endl;
+    for(int i = 0 ;i <merge_seeks.size() ; i++){
+        cout<<"No of Seeks in merge pass "<<i+1<<": "<<merge_seeks[i]<<endl;
+    }
+    for(int i = 0 ;i <merge_transfer.size() ; i++){
+        cout<<"No of transfer in merge pass "<<i+1<<": "<<merge_transfer[i]<<endl;
+    }
 }
